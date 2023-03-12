@@ -2,17 +2,22 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./login";
 import Main from "./Main";
 import { NotFound } from "./NotFound";
+import ConfigPoint from "./pages/ConfigPoint";
+import { Home } from "./pages/Home";
+import { ManagePoint } from "./pages/ManagePoint";
 
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" exact element={<Login />} />
-        <Route path="/main" >
-          <Route index element={<Main />} />
+        <Route path="/login" exact element={<Login />} />
+        <Route path="/" element={<Main />} >
+          <Route index element={<Home />} />
+          <Route path="manage-point" element={<ManagePoint />} />
+          <Route path="config-point" element={<ConfigPoint />} />
         </Route>
-        <Route element={<NotFound />}/>
+        <Route path="*" element={<NotFound />}/>
       </Routes>
   </BrowserRouter>
   );
