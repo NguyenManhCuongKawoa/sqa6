@@ -43,6 +43,9 @@ public class LichAPI {
     @Autowired
     private DiemSVRepository diemSVRepository;
 
+    @Autowired
+    private MonHocRepository monHocRepository;
+
     @GetMapping
     public ResponseEntity<?> getAllCalendarOfTeacher(@RequestParam Long teacherId, Pageable pageable) {
         log.debug("REST request to get a page of Lich ");
@@ -60,7 +63,7 @@ public class LichAPI {
         }
 
         Lich lich = lichOptional.get();
-
+        MonHoc monHoc = monHocRepository.findById(lich.getMonHocId()).orElse(new MonHoc());
         List<MonHocDauDiem> monHocDauDiems = mdDdRepository.findAllByMonHocId(lich.getMonHocId());
 
         List<LichSV> lichSVS = lichSVRepository.findAllByLichId(calendarId);
@@ -72,6 +75,7 @@ public class LichAPI {
         lichResponse.setEnd(lich.getEnd());
         lichResponse.setGvId(lich.getGvId());
         lichResponse.setMonHocId(lich.getMonHocId());
+        lichResponse.setTenMonHoc(monHoc.getName());
 
         List<LichResponse.LichDauDiem> lichDauDiems = monHocDauDiems.stream().map(d -> {
             LichResponse.LichDauDiem lichDauDiem = new LichResponse.LichDauDiem();
@@ -111,6 +115,7 @@ public class LichAPI {
             } else {
                 lichSv.setPast(false);
             }
+            lichSv.setFinalPoint(point);
 
             return lichSv;
         }).collect(Collectors.toList());

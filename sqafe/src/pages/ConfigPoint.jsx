@@ -39,14 +39,14 @@ const ConfigPoint = () => {
                         onChange={handleChangeMonHocId}
                         input={<Input name="age" id="age-native-label-placeholder" />}
                     >
-                        <option value={null}>Choose...</option>
+                        <option value={""}>Choose...</option>
                         <option value="0.1">0.1</option>
                     </NativeSelect>
                 </FormControl>
             </div>
         </div>
         <br />
-        <div className={monHocId == null ? "d-none" : ""}>
+        <div className={monHocId == null || monHocId == "" ? "d-none" : ""}>
             <div className="d-flex align-items-center mb-4">
                 <div className="mr-4">Điểm Điểm Danh</div>
                 <FormControl>

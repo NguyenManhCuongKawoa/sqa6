@@ -11,6 +11,8 @@ public class LichResponse {
     private LocalDateTime end;
     private Long gvId;
     private Long monHocId;
+
+    private String tenMonHoc;
     private List<LichDauDiem> dauDiems;
 
     private List<LichSv> sv;
@@ -63,6 +65,14 @@ public class LichResponse {
         this.monHocId = monHocId;
     }
 
+    public String getTenMonHoc() {
+        return tenMonHoc;
+    }
+
+    public void setTenMonHoc(String tenMonHoc) {
+        this.tenMonHoc = tenMonHoc;
+    }
+
     public List<LichDauDiem> getDauDiems() {
         return dauDiems;
     }
@@ -84,6 +94,8 @@ public class LichResponse {
         private String name;
         private String masv;
         private List<Double> points;
+
+        private Double finalPoint;
         private Boolean past;
 
         public Long getSvId() {
@@ -116,6 +128,14 @@ public class LichResponse {
 
         public void setPoints(List<Double> points) {
             this.points = points;
+        }
+
+        public Double getFinalPoint() {
+            return finalPoint;
+        }
+
+        public void setFinalPoint(Double finalPoint) {
+            this.finalPoint = finalPoint;
         }
 
         public Boolean getPast() {
