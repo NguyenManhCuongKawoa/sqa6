@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/sqa6?createDatabaseIfNotExist=true
-    username: root
-    password: 1234
+    url: jdbc:mysql://101.99.6.31:2206/sqa6?createDatabaseIfNotExist=true
+    username: ltm
+    password: Aladin@123
   jpa:
     hibernate:
       ddl-auto: update

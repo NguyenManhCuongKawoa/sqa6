@@ -17,6 +17,10 @@ public class LichResponse {
 
     private List<LichSv> sv;
 
+    private Long numSvPast;
+    private Long numSvFail;
+    private Long numSvBlank;
+
     public String getName() {
         return name;
     }
@@ -89,6 +93,30 @@ public class LichResponse {
         this.sv = sv;
     }
 
+    public Long getNumSvPast() {
+        return numSvPast;
+    }
+
+    public void setNumSvPast(Long numSvPast) {
+        this.numSvPast = numSvPast;
+    }
+
+    public Long getNumSvFail() {
+        return numSvFail;
+    }
+
+    public void setNumSvFail(Long numSvFail) {
+        this.numSvFail = numSvFail;
+    }
+
+    public Long getNumSvBlank() {
+        return numSvBlank;
+    }
+
+    public void setNumSvBlank(Long numSvBlank) {
+        this.numSvBlank = numSvBlank;
+    }
+
     public static class LichSv {
         private Long svId;
         private String name;
@@ -145,6 +173,8 @@ public class LichResponse {
         public void setPast(Boolean past) {
             this.past = past;
         }
+
+
     }
 
     public static class LichDauDiem {

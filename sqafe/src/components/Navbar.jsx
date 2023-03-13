@@ -1,7 +1,30 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
+import clsx from 'clsx';
+import React, { useEffect, useState } from 'react'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { getUserInfo, removeUserInfo, userRole } from '../service/storage'
 
 function Navbar() {
+    const navigate = useNavigate();
+    const [userInfo, setUserInfo] = useState()
+
+    const [role, setRole] = useState()
+    useEffect(() => {
+        setRole(userRole())
+    }, [])
+
+    useEffect(() => {
+        const data = getUserInfo()
+        console.log(data);
+        setUserInfo(data)
+    
+    }, [])
+    
+    const handleLogout = () => {
+        navigate("/login")
+        removeUserInfo()
+    }
+
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <a className="navbar-brand" href="#">SQA 6</a>
@@ -13,16 +36,24 @@ function Navbar() {
                 <li className="nav-item">
                     <NavLink className={({ isActive }) => isActive ? "active nav-link" : "nav-link"} to="/" >Trang chủ</NavLink>
                 </li>
-                <li className="nav-item">
-                    <NavLink className={({ isActive }) => isActive ? "active nav-link" : "nav-link"} to="/manage-point">Quản Lý Điểm</NavLink>
-                </li>
-                <li className="nav-item">
-                    <NavLink className={({ isActive }) => isActive ? "active nav-link" : "nav-link"} to="/config-point">Cấu Hinh Điểm</NavLink>
-                </li>
+                {
+                    role == "GIANG_VIEN" ? <li className="nav-item">
+                        <NavLink className={({ isActive }) => isActive ? "active nav-link" : "nav-link"} to="/manage-point">Quản Lý Điểm</NavLink>
+                    </li> : role == 'QUAN_LY' ? <li className="nav-item">
+                        <NavLink className={({ isActive }) => isActive ? "active nav-link" : "nav-link"} to="/config-point">Cấu Hinh Điểm</NavLink>
+                    </li> : <></>
+                }
+                
+                
+                
             </ul>
-            <div className="d-flex align-items-center">
-                <div className="mr-4">Nguyen Manh Cuong</div>
-                <button type="button" className="btn btn-secondary">Logout</button>
+            <div className={clsx("align-items-center", {"d-none": role == null, "d-flex": role != null})}>
+                <div className="mr-4">{userInfo != null ? userInfo.data.name : ""}</div>
+                <button type="button" className="btn btn-secondary" onClick={handleLogout}>Logout</button>
+            </div>
+
+            <div className={clsx("align-items-center", {"d-none": role != null, "d-flex": role == null})}>
+                <Link to={"/login"} className="btn btn-info">Login</Link>
             </div>
         </div>
         

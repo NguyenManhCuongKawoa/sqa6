@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @RestController
@@ -89,7 +89,8 @@ public class LichAPI {
             return lichDauDiem;
         }).collect(Collectors.toList());
         lichResponse.setDauDiems(lichDauDiems);
-
+        AtomicLong numPart = new AtomicLong();
+        AtomicLong numFail = new AtomicLong();
         List<LichResponse.LichSv> lichSvs = lichSVS.stream().map(lsv -> {
             LichResponse.LichSv lichSv = new LichResponse.LichSv();
             SinhVien sinhVien = svRepository.findById(lsv.getSvId()).orElse(new SinhVien());
@@ -104,24 +105,34 @@ public class LichAPI {
                 return diemSV.getPoint();
             }).collect(Collectors.toList());
             lichSv.setPoints(points);
-
-            Double point = 0.0;
-            for(int i = 0; i < points.size(); i++) {
-                point += points.get(i) * monHocDauDiems.get(i).getPhanTram();
-            }
-
-            if(point >= DBConstants.PART_POINT) {
-                lichSv.setPast(true);
-            } else {
+            if(points == null || points.size() == 0 || points.get(0) == null) {
+                lichSv.setFinalPoint(null);
                 lichSv.setPast(false);
+            } else {
+                Double point = 0.0;
+                for(int i = 0; i < points.size(); i++) {
+                    point += points.get(i) * monHocDauDiems.get(i).getPhanTram();
+                }
+
+                if(point >= DBConstants.PART_POINT) {
+                    lichSv.setPast(true);
+                    numPart.getAndIncrement();
+                } else {
+                    lichSv.setPast(false);
+                    numFail.getAndIncrement();
+                }
+                lichSv.setFinalPoint(point);
             }
-            lichSv.setFinalPoint(point);
+
 
             return lichSv;
         }).collect(Collectors.toList());
 
 
         lichResponse.setSv(lichSvs);
+        lichResponse.setNumSvPast(numPart.get());
+        lichResponse.setNumSvFail(numFail.get());
+        lichResponse.setNumSvBlank(lichSvs.size() - numPart.get() - numFail.get());
 
         return ResponseEntity.ok(lichResponse);
     }

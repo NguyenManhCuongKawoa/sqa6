@@ -12,17 +12,31 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { login } from '../service/apiservice';
+import { toast } from 'react-toastify';
+import { saveUserInfo } from '../service/storage';
+import { useNavigate } from 'react-router-dom';
 
 const theme = createTheme();
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
+    const body = {
+      username: data.get('username'),
       password: data.get('password'),
-    });
+    }
+   
+    login(body)
+      .then(res => {
+        saveUserInfo(res.data)
+        console.log(res.data);
+        navigate("/");
+    })
+    .catch(error => toast.error("Sai tài khoản hoặc mật khẩu"));
   };
 
   return (
@@ -48,10 +62,10 @@ export default function Login() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete="username"
               autoFocus
             />
             <TextField

@@ -1,22 +1,88 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { ModalPoint } from '../components/ModalPoint'
+import { enterPoint, getCalendarDetail } from '../service/apiservice'
 
 const DetailPoint = () => {
+    let { calendarId } = useParams();
+    const [calendar, setCalendar] = useState()
+    const [svClicked, setSvClicked] = useState()
+
+    useEffect(() => {
+        getDataCalendar()
+      
+    }, [])
+
+    const getDataCalendar = () => {
+        getCalendarDetail(calendarId)
+            .then(res => {
+                console.log(res.data);
+                setCalendar(res.data)
+            })
+            .catch(error => toast.error("Có lỗi xảy ra khi lấy dữ liệu"));
+    }    
+
+    const updatePoint = (svPointChanged) => {
+        console.log(svPointChanged);
+
+        let body = {
+            "monhocId": calendar.monHocId, 
+            "points": [
+                {
+                    "svId": svPointChanged.svId,
+                    "dauDiemId": 1,
+                    "point": svPointChanged.points[0]
+                },
+                {
+                    "svId": svPointChanged.svId,
+                    "dauDiemId": 2,
+                    "point": svPointChanged.points[1]
+                },
+                {
+                    "svId": svPointChanged.svId,
+                    "dauDiemId": 3,
+                    "point": svPointChanged.points[2]
+                }
+            ]
+        }
+
+        console.log(body);
+        enterPoint(body)
+        getDataCalendar()
+        toast.info("Cập nhật điểm thành công")
+    }
+
   return (
     <div className = "container mt-4 ">
         <div className="text-uppercase font-weight-bold mb-1">Thông tin cơ bản</div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item ">Tên lịch: <span className="font-weight-light">Lịch học 1 (Java)</span></li>
-            <li class="list-group-item ">Địa Chỉ: <span className="font-weight-light">Phòng 302 A2</span> </li>
-            <li class="list-group-item ">Môn học: <span className="font-weight-light">Lập trình java</span></li>  
-            <li class="list-group-item ">Thời gian bắt đầu: <span className="font-weight-light">2022-11-22 09:00:00</span></li>
-            <li class="list-group-item ">Thời gian kết thúc: <span className="font-weight-light">2022-11-22 11:00:00</span></li>
+        <ul className="list-group list-group-flush">
+            <li className="list-group-item ">Tên lịch: <span className="font-weight-light">{calendar ? calendar.name : ""}</span></li>
+            <li className="list-group-item ">Địa Chỉ: <span className="font-weight-light">{calendar ? calendar.address : ""}</span> </li>
+            <li className="list-group-item ">Môn học: <span className="font-weight-light">{calendar ? calendar.tenMonHoc : ""}</span></li>  
+            <li className="list-group-item ">Thời gian bắt đầu: <span className="font-weight-light">{calendar ? `${calendar.start[2]}-${calendar.start[1]}-${calendar.start[0]} ${calendar.start[3]}:${calendar.start[4]}`  : ""}</span></li>
+            <li className="list-group-item ">Thời gian kết thúc: <span className="font-weight-light">{calendar ? `${calendar.end[2]}-${calendar.end[1]}-${calendar.end[0]} ${calendar.end[3]}:${calendar.start[4]}`  : ""}</span></li>
         </ul>
 
+        <div className="text-uppercase font-weight-bold mb-1 mt-4">Thống kê sinh viên</div>
+        <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Số sinh viên được thi
+                <span class="badge badge-primary badge-pill" style={{backgroundColor: "#28a745"}}>{calendar ? calendar.numSvPast : '-'}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Số sinh viên không được thi
+                <span class="badge badge-primary badge-pill" style={{backgroundColor: "#dc3545"}}>{calendar ? calendar.numSvFail : '-'}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Số sinh viên chưa cấp nhật điểm
+                <span class="badge badge-primary badge-pill">{calendar ? calendar.numSvBlank : '-'}</span>
+            </li>
+        </ul>
 
         <div className="text-uppercase font-weight-bold mb-1 mt-4">Danh sách sinh viên</div>
         <div className="">
-            <table class="table table-sm table-hover">
+            <table className="table table-sm table-hover">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -30,31 +96,24 @@ const DetailPoint = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr data-toggle="modal" data-target="#exampleModalLong" style={{cursor: "pointer"}}>
-                        <th scope="row">1</th>
-                        <td>Nguyễn Mạnh Cường</td>
-                        <td>B19DCCN083</td>
-                        <td>9.9</td>
-                        <td>9.9</td>
-                        <td>9.9</td>
-                        <td>9.9</td>
-                        <td class="btn-success">Success</td>
-                    </tr>
-                    <tr data-toggle="modal" data-target="#exampleModalLong" style={{cursor: "pointer"}}>
-                        <th scope="row">2</th>
-                        <td>Nguyễn Văn A</td>
-                        <td>B19DCCN888</td>
-                        <td>3.9</td>
-                        <td>3.9</td>
-                        <td>3.9</td>
-                        <td>3.9</td>
-                        <td class="btn-danger">Fail</td>
-                    </tr>
-                    
+                    {
+                        calendar ? calendar.sv.map((sv, i) => {
+                            return  <tr data-toggle="modal" data-target="#exampleModalLong" key={i} style={{cursor: "pointer"}} onClick={() => setSvClicked(sv)}>
+                                <th scope="row">{i + 1}</th>
+                                <td>{sv.name}</td>
+                                <td>{sv.masv}</td>
+                                <td>{sv.points[0] ? sv.points[0] : '-'}</td>
+                                <td>{sv.points[1] ? sv.points[1] : '-'}</td>
+                                <td>{sv.points[2] ? sv.points[2] : '-'}</td>
+                                <td>{sv.finalPoint ? sv.finalPoint : '-'}</td>
+                                {sv.finalPoint == null ? <td></td> : sv.past == true ? <td className="btn-success">Past</td> : <td className="btn-danger">Fail</td>}
+                            </tr>
+                        }) : <></>
+                    }
                 </tbody>
             </table>
         </div>
-        <ModalPoint />
+        <ModalPoint sv = {svClicked} updatePoint = {updatePoint}/>
     </div>
   )
 }
