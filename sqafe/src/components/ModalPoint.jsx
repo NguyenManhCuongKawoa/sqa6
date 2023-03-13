@@ -54,7 +54,7 @@ export const ModalPoint = ({sv, updatePoint}) => {
                     <li className="list-group-item ">Tên SV: <span className="font-weight-light">{sv ? sv.name : ""}</span></li>
                     <li className="list-group-item ">Mã SV: <span className="font-weight-light">{sv ? sv.masv : ""}</span> </li>
                     <li className="list-group-item d-flex align-items-center">
-                        <span className="mr-4" style={{minWidth: "146px"}}>Điểm Điểm Danh:</span> <input type="number" value={point1} min={0} max={10} onChange={handleChangeValue1} className="form-control " style={{flex: "1"}} aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
+                        <span className="mr-4" style={{minWidth: "146px"}}>Điểm Điểm Danh :</span> <input type="number" value={point1} min={0} max={10} onChange={handleChangeValue1} className="form-control " style={{flex: "1"}} aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>
                     </li>
                     <li className="list-group-item d-flex align-items-center">
                         <span className="mr-4" style={{minWidth: "146px"}}>Điểm Kiểm Tra:</span> <input type="number" value={point2} min={0} max={10} onChange={handleChangeValue2} className="form-control " style={{flex: "1"}} aria-label="Small" aria-describedby="inputGroup-sizing-sm"/>

@@ -88,10 +88,10 @@ const DetailPoint = () => {
                         <th scope="col">#</th>
                         <th scope="col">Tên SV</th>
                         <th scope="col">Mã SV</th>
-                        <th scope="col">Điểm Điểm Danh</th>
-                        <th scope="col">Điểm Kiểm Tra</th>
-                        <th scope="col">Điểm Thi Cuối Kì</th>
-                        <th scope="col">Điểm Tổng kế</th>
+                        <th scope="col">Điểm Điểm Danh {calendar ? ' - ' + calendar.dauDiems[0].phanTram : ''}</th>
+                        <th scope="col">Điểm Kiểm Tra {calendar ? ' - ' + calendar.dauDiems[1].phanTram : ''}</th>
+                        <th scope="col">Điểm Thi Cuối Kì {calendar ? ' - ' + calendar.dauDiems[2].phanTram : ''}</th>
+                        <th scope="col">Điểm Tổng kết</th>
                         <th scope="col">Trạng Thái</th>
                     </tr>
                 </thead>
