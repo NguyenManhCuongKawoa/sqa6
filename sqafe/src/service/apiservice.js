@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const hostbe = 'http://192.168.1.243:9999'; 
+const hostbe = ''; 
 
 export function login(data) {
     return axios.post(`${hostbe}/api/user`, data);
