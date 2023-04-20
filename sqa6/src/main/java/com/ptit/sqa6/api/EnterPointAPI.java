@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("api/enter-point")
@@ -40,17 +41,23 @@ public class EnterPointAPI {
 
         List<DiemSV> diemSVS = new ArrayList<>();
         for(EnterPointDTO.ItemEnterPoint e : enterPointDTO.getPoints()) {
-            DiemSV diemSV = new DiemSV();
-            diemSV.setPoint(e.getPoint());
-            diemSV.setSvId(e.getSvId());
 
             List<MonHocDauDiem> dauDiems = mdDdRepository.findAllByDauDiemIdAndMonHocId(e.getDauDiemId(), enterPointDTO.getMonhocId());
             if(dauDiems.isEmpty()) {
                 return ResponseEntity.badRequest().body("Monhoc is not config dau diem");
             }
-            diemSV.setMonHocDauDiemId(dauDiems.get(0).getId());
 
-            diemSVS.add(diemSV);
+            Optional<DiemSV> diemSVOptional = diemSVRepository.findBySvIdAndMonHocDauDiemId(e.getSvId(), dauDiems.get(0).getId());
+            if(diemSVOptional.isPresent()) {
+                diemSVOptional.get().setPoint(e.getPoint());
+                diemSVS.add(diemSVOptional.get());
+            } else {
+                DiemSV svDiem = new DiemSV();
+                svDiem.setSvId(e.getSvId());
+                svDiem.setMonHocDauDiemId(dauDiems.get(0).getId());
+                svDiem.setPoint(e.getPoint());
+                diemSVS.add(svDiem);
+            }
         }
 
         diemSVRepository.saveAll(diemSVS);
