@@ -19,6 +19,13 @@ public class MonHocDauDiem implements Serializable {
     @Column(name = "pham_tram")
     private Double phanTram;
 
+    public MonHocDauDiem() {}
+    public MonHocDauDiem(Long monHocId, Long dauDiemId, Double phanTram) {
+        this.monHocId = monHocId;
+        this.dauDiemId = dauDiemId;
+        this.phanTram = phanTram;
+    }
+
     public Long getId() {
         return id;
     }

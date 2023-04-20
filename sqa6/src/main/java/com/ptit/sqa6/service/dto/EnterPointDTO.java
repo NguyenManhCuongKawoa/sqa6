@@ -27,6 +27,14 @@ public class EnterPointDTO {
         private Long dauDiemId;
         private Double point;
 
+        public ItemEnterPoint() {}
+
+        public ItemEnterPoint(Long svId, Long dauDiemId, Double point) {
+            this.svId = svId;
+            this.dauDiemId = dauDiemId;
+            this.point = point;
+        }
+
         public Long getSvId() {
             return svId;
         }
